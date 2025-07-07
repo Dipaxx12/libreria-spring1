@@ -38,9 +38,12 @@ public class ClienteController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Cliente> update(@PathVariable int id, @RequestBody Cliente cliente) {
-        Cliente cliente1 = clienteService.update(id, cliente);
-        return ResponseEntity.ok(cliente1);
+    public ResponseEntity<Cliente> update(@PathVariable int id,
+                                          @RequestBody Cliente cliente) {
+        Cliente actualizado = clienteService.update(id, cliente);
+        return (actualizado != null)
+                ? ResponseEntity.ok(actualizado)
+                : ResponseEntity.notFound().build();   // ← devuelve 404 si no existe
     }
 
     @DeleteMapping("/{id}")
