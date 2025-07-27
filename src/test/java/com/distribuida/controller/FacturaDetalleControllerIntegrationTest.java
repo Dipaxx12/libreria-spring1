@@ -66,9 +66,9 @@ class FacturaDetalleControllerIntegrationTest {
 
     @Test
     void testFinOne() throws Exception {
-        Mockito.when(facturaDetalleService.findOne(1)).thenReturn(mockDetalle());
+        Mockito.when(facturaDetalleService.findOne(3)).thenReturn(mockDetalle());
 
-        mockMvc.perform(get("/api/facturas-detalle/1"))
+        mockMvc.perform(get("/api/facturas-detalle/3"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.subTotal", is(50.0)));
     }
@@ -87,8 +87,8 @@ class FacturaDetalleControllerIntegrationTest {
         Mockito.when(facturaDetalleService.save(any(FacturaDetalle.class))).thenReturn(nuevo);
 
         mockMvc.perform(post("/api/facturas-detalle")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(nuevo)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(nuevo)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.cantidad", is(2)));
     }
@@ -101,8 +101,8 @@ class FacturaDetalleControllerIntegrationTest {
         Mockito.when(facturaDetalleService.update(eq(1), any(FacturaDetalle.class))).thenReturn(actualizado);
 
         mockMvc.perform(put("/api/facturas-detalle/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(actualizado)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(actualizado)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.cantidad", is(3)));
     }
@@ -112,8 +112,8 @@ class FacturaDetalleControllerIntegrationTest {
         Mockito.when(facturaDetalleService.update(eq(2), any(FacturaDetalle.class))).thenReturn(null);
 
         mockMvc.perform(put("/api/facturas-detalle/2")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(mockDetalle())))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(mockDetalle())))
                 .andExpect(status().isNotFound());
     }
 

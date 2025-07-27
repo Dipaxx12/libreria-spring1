@@ -2,7 +2,6 @@ package com.distribuida.controller;
 
 import com.distribuida.model.Cliente;
 import com.distribuida.service.ClienteService;
-import org.apache.coyote.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -44,7 +43,7 @@ public class ClienteControllerTestUnitaria {
         when(clienteService.findAll()).thenReturn(List.of(cliente));
         ResponseEntity<List<Cliente>> response = clienteController.findAll();
 
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertEquals(1, response.getBody().size());
 
         verify(clienteService, times(1)).findAll();
@@ -54,7 +53,7 @@ public class ClienteControllerTestUnitaria {
     public void testFinOne() {
         when(clienteService.findOne(1)).thenReturn(cliente);
         ResponseEntity<Cliente> response = clienteController.findOne(1);
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertEquals(cliente.getNombre(), response.getBody().getNombre());
     }
 
@@ -62,14 +61,14 @@ public class ClienteControllerTestUnitaria {
     public void testFindOneNoExistente() {
         when(clienteService.findOne(2)).thenReturn(null);
         ResponseEntity<Cliente> response = clienteController.findOne(2);
-        assertEquals(404, response.getStatusCodeValue());
+        assertEquals(404, response.getStatusCode().value());
     }
 
     @Test
     public void testSave() {
         when(clienteService.save(cliente)).thenReturn(cliente);
         ResponseEntity<Cliente> response = clienteController.save(cliente);
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertEquals("Pedro", response.getBody().getNombre());
     }
 
@@ -77,7 +76,7 @@ public class ClienteControllerTestUnitaria {
     public void testUpdate() {
         when(clienteService.update(1, cliente)).thenReturn(cliente);
         ResponseEntity<Cliente> response = clienteController.update(1, cliente);
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
     }
 
     @Test
@@ -86,16 +85,14 @@ public class ClienteControllerTestUnitaria {
 
         ResponseEntity<Cliente> response = clienteController.update(2, cliente);
 
-        assertEquals(404, response.getStatusCodeValue());
+        assertEquals(404, response.getStatusCode().value());
     }
 
     @Test
     public void testDelete() {
         doNothing().when(clienteService).delete(1);
         ResponseEntity<Void> response = clienteController.delete(1);
-        assertEquals(204, response.getStatusCodeValue());
+        assertEquals(204, response.getStatusCode().value());
         verify(clienteService, times(1)).delete(1);
     }
-
-
 }

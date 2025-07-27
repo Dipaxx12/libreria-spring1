@@ -40,7 +40,7 @@ public class FacturaDetalleRepositoryTestIntegration {
 
     @Test
     public void findOne() {
-        Optional<FacturaDetalle> detalle = facturaDetalleRepository.findById(1);
+        Optional<FacturaDetalle> detalle = facturaDetalleRepository.findById(3);
         assertTrue(detalle.isPresent(), "El detalle con ID 1 debe existir.");
         System.out.println(detalle.get());
     }

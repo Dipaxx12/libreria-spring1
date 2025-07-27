@@ -26,27 +26,33 @@ public class ClienteRepositoryTestIntegracion {
     public void findAll() {
         List<Cliente> clientes = clienteRepository.findAll();
 
-        // Asserts
         assertNotNull(clientes, "La lista de clientes no debe ser null");
         assertFalse(clientes.isEmpty(), "La lista de clientes no debe estar vacía");
 
-        for (Cliente item : clientes) {
-            System.out.println(item.toString());
-        }
+        clientes.forEach(System.out::println);
     }
 
     @Test
     public void findOne() {
-        Optional<Cliente> clienteOpt = clienteRepository.findById(2);
+        Cliente cliente = new Cliente(
+                0,
+                "1800000001",
+                "Ana",
+                "Rojas",
+                "Calle Falsa 123",
+                "0987654321",
+                "ana.rojas@example.com");
+        Cliente guardado = clienteRepository.save(cliente);
 
-        // Asserts
-        assertTrue(clienteOpt.isPresent(), "El cliente con ID 2 debe existir");
+        Optional<Cliente> clienteOpt = clienteRepository.findById(guardado.getIdCliente());
 
-        Cliente cliente = clienteOpt.get();
-        assertNotNull(cliente.getNombre(), "El nombre no debe ser null");
-        assertNotNull(cliente.getCedula(), "La cédula no debe ser null");
+        assertTrue(clienteOpt.isPresent(), "El cliente guardado debe existir");
 
-        System.out.println("✅ Cliente encontrado: " + cliente.toString());
+        Cliente encontrado = clienteOpt.get();
+        assertEquals("Ana", encontrado.getNombre());
+        assertEquals("Rojas", encontrado.getApellido());
+
+        System.out.println("✅ Cliente encontrado: " + encontrado.toString());
     }
 
     @Test
@@ -58,12 +64,10 @@ public class ClienteRepositoryTestIntegracion {
                 "Taipe",
                 "Av. por ahi",
                 "0987654321",
-                "juan.taipe@correo.com"
-        );
+                "juan.taipe@correo.com");
 
         Cliente clienteGuardado = clienteRepository.save(cliente);
 
-        // Asserts
         assertNotNull(clienteGuardado, "El cliente guardado no debe ser null");
         assertNotEquals(0, clienteGuardado.getIdCliente(), "El ID debe ser generado");
         assertEquals("Juan", clienteGuardado.getNombre());
@@ -72,21 +76,26 @@ public class ClienteRepositoryTestIntegracion {
 
     @Test
     public void update() {
-        Optional<Cliente> clienteOpt = clienteRepository.findById(2);
-        assertTrue(clienteOpt.isPresent(), "Debe existir un cliente con ID 2 para actualizar");
+        Cliente cliente = new Cliente(
+                0,
+                "1711111111",
+                "Carlos",
+                "Mendoza",
+                "Dirección antigua",
+                "0991111111",
+                "carlos@correo.com");
+        Cliente guardado = clienteRepository.save(cliente);
 
-        Cliente cliente = clienteOpt.get();
-        cliente.setNombre("Juanito");
-        cliente.setApellido("Taipe Actualizado");
-        cliente.setDireccion("Nueva dirección");
-        cliente.setTelefono("0999999999");
-        cliente.setCorreo("juanito.actualizado@correo.com");
+        guardado.setNombre("Carlos Actualizado");
+        guardado.setApellido("Mendoza P.");
+        guardado.setDireccion("Nueva dirección");
+        guardado.setTelefono("0999999999");
+        guardado.setCorreo("carlos.actualizado@correo.com");
 
-        Cliente actualizado = clienteRepository.save(cliente);
+        Cliente actualizado = clienteRepository.save(guardado);
 
-        // Asserts
-        assertEquals("Juanito", actualizado.getNombre());
-        assertEquals("Taipe Actualizado", actualizado.getApellido());
+        assertEquals("Carlos Actualizado", actualizado.getNombre());
+        assertEquals("Mendoza P.", actualizado.getApellido());
         assertEquals("0999999999", actualizado.getTelefono());
 
         System.out.println("✅ Cliente actualizado: " + actualizado.toString());
@@ -94,17 +103,22 @@ public class ClienteRepositoryTestIntegracion {
 
     @Test
     public void delete() {
-        int idAEliminar = 2;
+        Cliente cliente = new Cliente(
+                0,
+                "1899999999",
+                "Lucía",
+                "Velasco",
+                "Calle 10",
+                "0966666666",
+                "lucia@correo.com");
+        Cliente guardado = clienteRepository.save(cliente);
+        int idAEliminar = guardado.getIdCliente();
 
-        boolean existeAntes = clienteRepository.existsById(idAEliminar);
-        if (!existeAntes) {
-            fail("❌ No se puede eliminar. Cliente con ID " + idAEliminar + " no existe.");
-        }
+        assertTrue(clienteRepository.existsById(idAEliminar));
 
         clienteRepository.deleteById(idAEliminar);
 
-        boolean existeDespues = clienteRepository.existsById(idAEliminar);
-        assertFalse(existeDespues, "El cliente debe haber sido eliminado");
+        assertFalse(clienteRepository.existsById(idAEliminar), "El cliente debe haber sido eliminado");
 
         System.out.println("🗑 Cliente con ID " + idAEliminar + " eliminado correctamente.");
     }

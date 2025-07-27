@@ -28,7 +28,7 @@ class FacturaControllerIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean  // warning por deprecation; funciona
+    @MockBean // warning por deprecation; funciona
     private FacturaService facturaService;
 
     @Autowired
@@ -85,8 +85,8 @@ class FacturaControllerIntegrationTest {
         Mockito.when(facturaService.save(any(Factura.class))).thenReturn(nuevo);
 
         mockMvc.perform(post("/api/facturas")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(nuevo)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(nuevo)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.numFactura", is("FAC-001")));
     }
@@ -100,8 +100,8 @@ class FacturaControllerIntegrationTest {
         Mockito.when(facturaService.update(eq(1), any(Factura.class))).thenReturn(actualizado);
 
         mockMvc.perform(put("/api/facturas/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(actualizado)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(actualizado)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.iva", is(15.0)));
     }
@@ -111,8 +111,8 @@ class FacturaControllerIntegrationTest {
         Mockito.when(facturaService.update(eq(2), any(Factura.class))).thenReturn(null);
 
         mockMvc.perform(put("/api/facturas/2")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(mockFactura())))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(mockFactura())))
                 .andExpect(status().isNotFound());
     }
 
