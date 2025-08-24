@@ -18,33 +18,32 @@ public class Carrito {
     @Column(name = "id_carrito")
     private Long idCarrito;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "id_cliente")
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_cliente", nullable = false)
     private Cliente cliente;
 
-    @Column(name = "token", unique = true)
+    @Column(name = "token", unique = true, length = 128)
     private String token;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "carrito", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<CarritoItem> items = new ArrayList<>();
 
-    @Column(name = "subtotal", precision = 12, scale = 2)
+    @Column(name = "subtotal", precision = 12, scale = 2, nullable = false)
     private BigDecimal subtotal = BigDecimal.ZERO;
 
-    @Column(name = "descuento", precision = 12, scale = 2)
+    @Column(name = "descuento", precision = 12, scale = 2, nullable = false)
     private BigDecimal descuento = BigDecimal.ZERO;
 
-    @Column(name = "impuestos", precision = 12, scale = 2)
+    @Column(name = "impuestos", precision = 12, scale = 2, nullable = false)
     private BigDecimal impuestos = BigDecimal.ZERO;
 
-    @Column(name = "total", precision = 12, scale = 2)
+    @Column(name = "total", precision = 12, scale = 2, nullable = false)
     private BigDecimal total = BigDecimal.ZERO;
 
-    @Column(name = "actualizado_en")
-    private LocalDateTime actualizadoEn;
+    @Column(name = "actualizado_en", nullable = false)
+    private LocalDateTime actualizadoEn = LocalDateTime.now();
 
-    // Método para recalcular totales
     public void recomputarTotales(BigDecimal tasaIva) {
         if (items == null || items.isEmpty()) {
             subtotal = BigDecimal.ZERO;
@@ -52,13 +51,12 @@ public class Carrito {
             total = BigDecimal.ZERO;
             return;
         }
-
         subtotal = items.stream()
                 .map(it -> {
                     BigDecimal pu = it.getPrecioUnitario() != null ? it.getPrecioUnitario() : BigDecimal.ZERO;
                     int cant = it.getCantidad() != null ? it.getCantidad() : 0;
                     BigDecimal tot = it.getTotal();
-                    return (tot != null ? tot : pu.multiply(BigDecimal.valueOf(cant)));
+                    return (tot != null) ? tot : pu.multiply(BigDecimal.valueOf(cant));
                 })
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
@@ -66,8 +64,9 @@ public class Carrito {
         if (base.signum() < 0)
             base = BigDecimal.ZERO;
 
-        impuestos = (tasaIva != null ? base.multiply(tasaIva) : BigDecimal.ZERO);
+        impuestos = (tasaIva != null) ? base.multiply(tasaIva) : BigDecimal.ZERO;
         total = base.add(impuestos);
+        actualizadoEn = LocalDateTime.now();
     }
 
     // Getters y Setters
