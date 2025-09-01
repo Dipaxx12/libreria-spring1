@@ -16,7 +16,7 @@ public class GuestCheckoutController {
     }
 
     @PostMapping
-    public ResponseEntity<Factura> checkout(@RequestParam String token) {
+    public ResponseEntity<Factura> checkout(@RequestParam("token") String token) {
         return ResponseEntity.ok(guestCheckoutService.checkoutByToken(token));
     }
 }
