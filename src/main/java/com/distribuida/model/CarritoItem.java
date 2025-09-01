@@ -18,6 +18,11 @@ public class CarritoItem {
     @JsonBackReference
     private Carrito carrito;
 
+    // Relación con Libro
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_libro", nullable = false)
+    private Libro libro;
+
     @Column(name = "nombre", length = 150)
     private String nombre;
 
@@ -55,6 +60,14 @@ public class CarritoItem {
 
     public void setCarrito(Carrito carrito) {
         this.carrito = carrito;
+    }
+
+    public Libro getLibro() {
+        return libro;
+    }
+
+    public void setLibro(Libro libro) {
+        this.libro = libro;
     }
 
     public String getNombre() {

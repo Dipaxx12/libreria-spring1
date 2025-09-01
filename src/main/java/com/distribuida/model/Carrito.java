@@ -18,7 +18,7 @@ public class Carrito {
     @Column(name = "id_carrito")
     private Long idCarrito;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "id_cliente", nullable = false)
     private Cliente cliente;
 
@@ -41,8 +41,8 @@ public class Carrito {
     @Column(name = "total", precision = 12, scale = 2, nullable = false)
     private BigDecimal total = BigDecimal.ZERO;
 
-    @Column(name = "actualizado_en", nullable = false)
-    private LocalDateTime actualizadoEn = LocalDateTime.now();
+    @Column(name = "actualizado_en", nullable = false, insertable = false, updatable = false)
+    private LocalDateTime actualizadoEn;
 
     public void recomputarTotales(BigDecimal tasaIva) {
         if (items == null || items.isEmpty()) {
